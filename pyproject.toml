@@ -1,0 +1,16 @@
+[tool.poetry]
+authors = ["Lee Tirrell <ltirrell@corticometrics.com>"]
+description = "An inviting place for interoperable reporting of medical imaging data"
+name = "hearth"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+black = "^21.9b0"
+pytest = "^5.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
