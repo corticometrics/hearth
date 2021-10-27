@@ -1,7 +1,9 @@
 [tool.poetry]
 authors = ["Lee Tirrell <ltirrell@corticometrics.com>"]
 description = "An inviting place for interoperable reporting of medical imaging data"
+license = "BSD-3-Clause"
 name = "hearth"
+repository = "https://github.com/corticometrics/hearth"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
