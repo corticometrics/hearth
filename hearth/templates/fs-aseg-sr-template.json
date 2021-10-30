@@ -1,0 +1,67 @@
+{
+  "@schema": "https://raw.githubusercontent.com/qiicr/dcmqi/master/doc/schemas/sr-tid1500-schema.json#",
+
+  "SeriesDescription": "Measurements",
+  "SeriesNumber": "1001",
+  "InstanceNumber": "1",
+
+  "compositeContext": [
+    "{{ aseg_dicom_seg_filename }}"
+  ],
+
+  "imageLibrary": [{%- for dcm in t1_dicom_files %}{%- if loop.last %}
+    "{{ dcm }}"{%- else %}
+    "{{ dcm }}",{%- endif %}{%- endfor %}
+  ],
+
+  "observerContext": {
+    "ObserverType": "DEVICE",
+    "DeviceObserverName": "FreeSurfer v6.0.1",
+    "DeviceObserverManufacturer": "MGH"
+  },
+
+  "VerificationFlag": "VERIFIED",
+  "CompletionFlag": "COMPLETE",
+
+  "activitySession": "1",
+  "timePoint": "1",
+
+  "Measurements": [{%- for measurement in aseg_dicom_seg[(6422530)] %}
+    {
+      "TrackingIdentifier": "{{ measurement[(6422534)].value }}",
+      "ReferencedSegment": {{ measurement[(6422532)].value }},
+      "SourceSeriesForImageSegmentation": "{{ t1_dicom_series_instance_uid }}",
+      "segmentationSOPInstanceUID": "{{ dicom_seg_instance_uid }}",
+      "Finding": {
+        "CodeValue": {%- for value in measurement[(6422531)] %} "{{ value[(524544)].value }}",{%- endfor %} 
+        "CodingSchemeDesignator": {%- for value in measurement[(6422531)] %} "{{ value[(524546)].value }}",{%- endfor %} 
+        "CodeMeaning": {%- for value in measurement[(6422531)] %} "{{ value[(524548)].value }}"{%- endfor %} 
+      },
+      "FindingSite": {
+        "CodeValue": {%- for value in measurement[(6422543)] %} "{{ value[(524544)].value }}",{%- endfor %} 
+        "CodingSchemeDesignator": {%- for value in measurement[(6422543)] %} "{{ value[(524546)].value }}",{%- endfor %} 
+        "CodeMeaning": {%- for value in measurement[(6422543)] %} "{{ value[(524548)].value }}"{%- endfor %}
+      },{%- for i in measurement[(6422543)] %} {%- for j in i[(6422545)] %}{%- if j[(524548)].value is defined and (j[(524548)].value == 'Left' or j[(524548)].value == 'Right') %}
+      "Laterality": {
+        "CodeValue": {%- for i in measurement[(6422543)] %} {%- for j in i[(6422545)] %} "{{ j[(524544)].value }}", {%- endfor %}{%- endfor %}
+        "CodingSchemeDesignator": {%- for i in measurement[(6422543)] %} {%- for j in i[(6422545)] %} "{{ j[(524546)].value }}", {%- endfor %}{%- endfor %}
+        "CodeMeaning": {%- for i in measurement[(6422543)] %} {%- for j in i[(6422545)] %} "{{ j[(524548)].value }}" {%- endfor %}{%- endfor %}
+      },{%- endif %}{%- endfor %}{%- endfor %}
+      "measurementItems": [
+        {
+          "value": "{{ aseg_stats_data[aseg_stats_data.StructName==measurement[(6422534)].value].Volume_mm3.values[0] }}",
+          "quantity": {
+            "CodeValue": "G-D705",
+            "CodingSchemeDesignator": "SRT",
+            "CodeMeaning": "volume"
+          },
+          "units": {
+            "CodeValue": "mm3",
+            "CodingSchemeDesignator": "UCUM",
+            "CodeMeaning": "cubic millimeter"
+          }
+        }
+      ]
+    }{%- if loop.last %}{%- else %},{%- endif %}{%- endfor %}
+  ]
+}
